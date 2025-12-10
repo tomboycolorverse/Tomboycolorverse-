@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
     <title>Tomboycolorverse</title>
     
     <script>
@@ -20,9 +21,9 @@
     
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script src="https://www.youtube.com/iframe_api"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         /* --- STYLES --- */
@@ -49,11 +50,16 @@
             padding-top: calc(80px + env(safe-area-inset-top)); 
             padding-bottom: calc(90px + env(safe-area-inset-bottom));
             overflow-x: hidden;
+            background-size: cover; 
+            background-position: center center; 
+            background-attachment: fixed; 
+            background-repeat: no-repeat;
+            transition: background 0.5s ease;
             -webkit-tap-highlight-color: transparent;
             overscroll-behavior-y: none;
         }
 
-        /* WALLPAPER LAYER */
+        /* FIXED WALLPAPER LAYER */
         #wallpaper-layer {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -1;
@@ -149,16 +155,17 @@
         .btn-gif { background: #00ff9d; color: black; grid-column: 2; box-shadow: 0 0 10px rgba(0, 255, 157, 0.3); }
         .btn-game { background: linear-gradient(45deg, #ff0000, #ffcc00); color: white; grid-column: 1 / span 2; box-shadow: 0 0 15px rgba(255,0,0,0.5); }
         .btn-link { background: #ff4500; color: white; grid-column: 2; }
-        .btn-avatar { background: #00bfff; color: white; grid-column: 1; }
+        /* NEW BUTTONS */
+        .btn-run { background: linear-gradient(to right, #ff9966, #ff5e62); color: white; grid-column: 1; } /* REPLACED AVATAR */
+        .btn-radio { background: var(--radio-gold); color: black; grid-column: 1; box-shadow: 0 0 10px var(--radio-gold); } /* REPLACED DRAW */
+        
         .btn-emerald { background: var(--emerald); color: white; grid-column: 1; box-shadow: 0 0 15px rgba(80, 200, 120, 0.6); }
         .btn-sticker { background: var(--sticker-pink); color: white; grid-column: 2; }
         .btn-reel { background: var(--reel-purple); color: white; grid-column: 2; box-shadow: 0 0 10px var(--reel-purple); }
         .btn-editor { background: var(--editor-orange); color: white; grid-column: 1; }
         .btn-vibe { background: var(--vibe-blue); color: white; grid-column: 2; box-shadow: 0 0 10px var(--vibe-blue); }
-        .btn-memory { background: var(--game-red); color: white; grid-column: 1; box-shadow: 0 0 10px var(--game-red); }
+        .btn-memory { background: var(--game-red); color: white; grid-column: 1 / span 2; box-shadow: 0 0 10px var(--game-red); }
         .btn-box { background: #666; color: white; grid-column: 2; border: 1px solid white; box-shadow: 0 0 10px white; }
-        .btn-run { background: linear-gradient(to right, #ff9966, #ff5e62); color: white; grid-column: 1; } 
-        .btn-radio { background: var(--radio-gold); color: black; grid-column: 1; box-shadow: 0 0 10px var(--radio-gold); }
 
         /* --- FEED --- */
         .feed-title { margin: 15px 15px 10px; font-size: 1.2rem; font-weight: 800; text-shadow: 1px 1px 2px black; display: flex; justify-content: space-between; }
@@ -307,6 +314,9 @@
 
         /* ANIMAL GAME CANVAS */
         #run-canvas { background: #222; border: 2px solid white; display:block; margin: 0 auto; border-radius: 10px; touch-action: none; }
+        
+        /* SNAP DRAW CANVAS */
+        #snap-draw-canvas { width: 100%; height: 300px; object-fit: contain; border: 1px solid #444; background: #000; touch-action: none; }
     </style>
 </head>
 <body>
@@ -362,23 +372,26 @@
 
             <div class="action-grid">
                 <button class="action-btn btn-upload" onclick="triggerPostUpload()"><i class="fas fa-cloud-upload-alt"></i> Upload</button>
-                <button class="action-btn btn-draw" onclick="openDrawModal()"><i class="fas fa-pencil-alt"></i> Draw</button>
+                
+                <button class="action-btn btn-radio" onclick="openRadio()"><i class="fas fa-music"></i> Galaxy Radio</button>
+                
                 <button class="action-btn btn-quote" onclick="openModal('quote-modal')"><i class="fas fa-font"></i> Quote</button>
                 <button class="action-btn btn-art" onclick="openModal('art-modal')"><i class="fas fa-magic"></i> Art AI</button>
                 <button class="action-btn btn-chat" onclick="openModal('chat-modal')"><i class="fas fa-comments"></i> Global</button>
                 <button class="action-btn btn-gif" onclick="openModal('gif-modal')"><i class="fas fa-search"></i> GIF</button>
                 <button class="action-btn btn-game" onclick="openGameModal()"><i class="fas fa-gamepad"></i> Tic Tac Toe</button>
                 <button class="action-btn btn-link" onclick="openModal('link-post-modal')"><i class="fas fa-link"></i> Link</button>
-                <button class="action-btn btn-avatar" onclick="openModal('avatar-studio-modal')"><i class="fas fa-user-astronaut"></i> Avatar</button>
+                
+                <button class="action-btn btn-run" onclick="startRainbowRun()"><i class="fas fa-paw"></i> Multiverse Run</button>
+                
                 <button class="action-btn btn-emerald" onclick="openEmeraldChat()"><i class="fas fa-robot"></i> Emerald</button>
                 <button class="action-btn btn-sticker" onclick="openModal('sticker-modal')"><i class="fas fa-sticky-note"></i> Sticker</button>
                 <button class="action-btn btn-reel" onclick="openModal('reel-maker-modal')"><i class="fas fa-film"></i> Story Reel</button>
+                <button class="action-btn btn-draw" onclick="openSnapDraw()"><i class="fas fa-pencil-alt"></i> Snap Draw</button>
                 <button class="action-btn btn-editor" onclick="openPhotoEditor()"><i class="fas fa-magic"></i> Editor Pro</button>
                 <button class="action-btn btn-vibe" onclick="openDailyVibe()"><i class="fas fa-star"></i> Daily Vibe</button>
                 <button class="action-btn btn-memory" onclick="startMemoryGame()"><i class="fas fa-brain"></i> Memory Game</button>
                 <button class="action-btn btn-box" onclick="openMysteryBox()"><i class="fas fa-gift"></i> Mystery Box</button>
-                <button class="action-btn btn-run" onclick="startRainbowRun()"><i class="fas fa-paw"></i> Multiverse Run</button>
-                <button class="action-btn btn-radio" onclick="openRadio()"><i class="fas fa-music"></i> Galaxy Radio</button>
             </div>
         </div>
 
@@ -425,7 +438,28 @@
             <button class="action-btn btn-quote" onclick="playStation('PLMC9KNkIncKtPzgY-5rmhvj7jy8jP1r68')">🎤 Pop Divas</button>
             <button class="action-btn btn-quote" onclick="playStation('RDCLAK5uy_kpsWRj59o6H1zW46lC9h3r7sJ8j3i7i84')">🔥 Hip Hop Hits</button>
             <button class="action-btn btn-quote" onclick="playStation('jfKfPfyJRdk')">🎧 Lofi Girl Live</button>
+            <button class="action-btn btn-quote" onclick="searchSong()">🔍 Search Song</button>
             <div id="radio-player" style="margin-top:10px; display:none;"></div>
+        </div>
+    </div>
+
+    <div id="draw-modal" class="modal-overlay" onclick="closeModal(event, 'draw-modal')">
+        <div class="modal-content" style="max-width:95%;">
+            <span class="close-modal-btn" onclick="closeModal(null, 'draw-modal')">&times;</span>
+            <h3>Snap Canvas 🎨</h3>
+            <button class="action-btn btn-upload" onclick="triggerDrawOverlay()">1. Import Photo</button>
+            <input type="hidden" role="uploadcare-uploader" id="draw-overlay-upload" data-images-only="true">
+            <div style="background:#222; border-radius:10px; overflow:hidden; margin-top:10px; border:1px solid white;">
+                <canvas id="snap-draw-canvas"></canvas>
+            </div>
+            <div style="margin:10px 0;">
+                <input type="color" id="draw-color" value="#ff00cc" onchange="setBrushColor(this.value)">
+                <input type="range" id="draw-size" min="1" max="20" value="5" onchange="setBrushSize(this.value)">
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button class="action-btn btn-quote" style="flex:1" onclick="clearSnapCanvas()">Clear</button>
+                <button class="action-btn btn-upload" style="flex:1" onclick="saveSnapDrawing()">POST</button>
+            </div>
         </div>
     </div>
 
@@ -475,40 +509,6 @@
             <p>Add Music?</p>
             <input type="text" id="reel-custom-music" class="text-input" placeholder="Paste YouTube Link (Song)...">
             <button class="action-btn btn-reel" style="width:100%" onclick="finalizeReel()">POST TO STORY</button>
-        </div>
-    </div>
-
-    <div id="avatar-studio-modal" class="modal-overlay" onclick="closeModal(event, 'avatar-studio-modal')">
-        <div class="modal-content">
-            <span class="close-modal-btn" onclick="closeModal(null, 'avatar-studio-modal')">&times;</span>
-            <h3>Avatar Studio 🧑‍🎤</h3>
-            <div style="background:#fff; padding:10px; border-radius:50%; width:150px; height:150px; margin:0 auto; overflow:hidden;">
-                <img id="avatar-preview" src="" style="width:100%; height:100%;">
-            </div>
-            <br>
-            <button class="action-btn btn-game" onclick="randomizeAvatar()">🎲 RANDOMIZE</button>
-            <label>Skin:</label>
-            <select id="av-skin" class="text-input" onchange="updateAvatarPreview()">
-                <option value="f5d0b1">Light</option>
-                <option value="e0ac69">Tan</option>
-                <option value="8d5524">Dark</option>
-            </select>
-            <label>Hair Color:</label>
-            <select id="av-haircolor" class="text-input" onchange="updateAvatarPreview()">
-                <option value="4a312c">Brown</option>
-                <option value="2f2f2f">Black</option>
-                <option value="b58143">Blonde</option>
-                <option value="724133">Auburn</option>
-                <option value="ff0000">Red</option>
-                <option value="0000ff">Blue</option>
-            </select>
-             <label>Hair Style:</label>
-            <select id="av-top" class="text-input" onchange="updateAvatarPreview()">
-                <option value="short01">Short</option>
-                <option value="long01">Long</option>
-                <option value="curly01">Curly</option>
-            </select>
-            <button class="action-btn btn-upload" style="width:100%; margin-top:10px;" onclick="saveAvatar()">SAVE LOOK</button>
         </div>
     </div>
 
@@ -619,23 +619,6 @@
         </div>
     </div>
 
-    <div id="draw-modal" class="modal-overlay">
-        <div class="modal-content" style="max-width: 95%;">
-            <span class="close-modal-btn" onclick="closeModal(null, 'draw-modal')">&times;</span>
-            <h3>Draw</h3>
-            <button class="action-btn btn-link" onclick="triggerDrawOverlay()">Import Photo</button>
-            <div style="background:white; border-radius:10px; overflow:hidden; margin-top:10px;"><canvas id="draw-canvas" height="300" style="width:100%; display:block;"></canvas></div>
-            <div style="margin:10px 0;">
-                <input type="color" id="draw-color" value="#000000" onchange="setBrushColor(this.value)">
-                <input type="range" id="draw-size" min="1" max="20" value="5" onchange="setBrushSize(this.value)">
-            </div>
-            <div style="display:flex; gap:10px;">
-                <button class="action-btn btn-quote" style="flex:1" onclick="clearCanvas()">Clear</button>
-                <button class="action-btn btn-upload" style="flex:1" onclick="saveDrawing()">Post</button>
-            </div>
-        </div>
-    </div>
-
     <div id="art-modal" class="modal-overlay" onclick="closeModal(event, 'art-modal')">
         <div class="modal-content">
             <span class="close-modal-btn" style="z-index:9999; font-size:2.5rem; color:red;" onclick="closeModal(null, 'art-modal')">&times;</span>
@@ -725,7 +708,6 @@
         let isScrolling = false;
         let quizScore = 0;
         let currentQuizSong = null;
-        let radioPlayer = null;
 
         // --- AUTH ---
         auth.onAuthStateChanged((user) => {
@@ -735,7 +717,6 @@
                 document.getElementById('app-screen').style.display = 'block';
                 loadUserData(); 
                 loadGlobalFeed();
-                updateAvatarPreview();
             } else {
                 document.getElementById('auth-screen').style.display = 'flex';
                 document.getElementById('app-screen').style.display = 'none';
@@ -763,12 +744,8 @@
         let startX, startY, startTime;
         window.addEventListener('scroll', () => {
             isScrolling = true;
-            document.body.style.pointerEvents = 'none'; 
             clearTimeout(window.scrollTimeout);
-            window.scrollTimeout = setTimeout(() => { 
-                isScrolling = false; 
-                document.body.style.pointerEvents = 'auto'; 
-            }, 150);
+            window.scrollTimeout = setTimeout(() => { isScrolling = false; }, 250);
         });
 
         // --- NAVIGATION SAFETY ---
@@ -852,11 +829,9 @@
                      let thumb = '';
                      if(ytId) thumb = `https://img.youtube.com/vi/${ytId}/0.jpg`;
                      else thumb = 'https://via.placeholder.com/400x300/000000/ffffff?text=Video';
-                     // HIDE IF BROKEN
                      content = `<div class="feed-media-container"><img src="${thumb}" style="width:100%; height:100%; object-fit:cover; opacity:0.7;" onerror="this.parentElement.style.display='none'"><i class="fas fa-play-circle" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:3rem; color:white;"></i></div>`;
                 } else {
                     const filterClass = d.filter || ''; 
-                    // BLANK BOX FIX: ON ERROR HIDE
                     const media = d.type === 'video' ? `<video src="${d.url}" class="${filterClass}" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover; pointer-events:none;"></video>` : `<img src="${d.url}" class="${filterClass}" onerror="this.parentElement.style.display='none'">`;
                     content = `<div class="feed-media-container">${media}</div>`;
                 }
@@ -1091,6 +1066,10 @@
                  document.getElementById('radio-player').style.display = 'block';
              }
         }
+        function searchSong() {
+            const s = prompt("Type song name (e.g. Mariah Carey):");
+            if(s) window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(s)}`, '_blank');
+        }
 
         // --- UPLOADS & CREATION ---
         function triggerPostUpload() { uploadcare.Widget('#post-upload').openDialog(null,{imagesOnly:false,crop:null}).done(f=>{f.done(i=>{tempFile=i; openModal('caption-modal');});}); }
@@ -1110,7 +1089,7 @@
         function finalizePost() { const c=document.getElementById('post-caption-input').value; const iv=tempFile.mimeType&&tempFile.mimeType.includes('video'); db.collection("posts").add({url:tempFile.cdnUrl, caption:c, type:iv?'video':'image', reactions:{}, timestamp:firebase.firestore.FieldValue.serverTimestamp(), userId:currentUser.uid}); closeModal(null,'caption-modal'); confetti(); }
         function finalizeReel() {
             const caption = document.getElementById('reel-caption').value;
-            const music = document.getElementById('reel-music-select').value;
+            const music = document.getElementById('reel-custom-music').value;
             const iv=tempFile.mimeType&&tempFile.mimeType.includes('video');
             db.collection("stories").add({ 
                 url: tempFile.cdnUrl, type: iv?'video':'image', userId: currentUser.uid, music: music, filter:'', lens:'',
@@ -1170,27 +1149,14 @@
         function openViewer(u,t,c,m, fClass, sId, sUserId, lens){
             const con=document.getElementById('viewer-container'); const f=fClass||'';
             
-            let lensHtml = '';
-            if(lens && t !== 'video') { 
-                let lensSrc = '';
-                if(lens === 'lens-cat') lensSrc = 'https://cdn-icons-png.flaticon.com/512/1067/1067357.png';
-                if(lens === 'lens-glasses') lensSrc = 'https://cdn-icons-png.flaticon.com/512/5895/5895982.png';
-                if(lens === 'lens-sparkles') lensSrc = 'https://cdn-icons-png.flaticon.com/512/616/616655.png';
-                if(lens === 'lens-frame') lensSrc = 'https://cdn-icons-png.flaticon.com/512/2663/2663008.png';
-                if(lensSrc) lensHtml = `<img src="${lensSrc}" class="lens-overlay" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:2; opacity:0.9;">`;
-            }
-
             if(t === 'smart-video' || t === 'youtube' || t === 'video-link') {
                 const ytId = extractYouTubeID(u);
-                if(ytId) {
-                    con.innerHTML = `<iframe width="100%" height="400" src="https://www.youtube.com/embed/${ytId}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-                } else {
-                    con.innerHTML = `<video src="${u}" controls autoplay style="max-width:100%; max-height:100%;"></video>`;
-                }
+                if(ytId) con.innerHTML = `<iframe width="100%" height="400" src="https://www.youtube.com/embed/${ytId}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+                else con.innerHTML = `<video src="${u}" controls autoplay style="max-width:100%; max-height:100%;"></video>`;
             } else if(t==='video') {
                 con.innerHTML=`<video src="${u}" class="${f}" controls autoplay playsinline style="max-width:100%; max-height:100%; object-fit:contain;"></video>`; 
             } else {
-                con.innerHTML=`<img src="${u}" class="${f}" style="max-width:100%; max-height:100%; object-fit:contain;">${lensHtml}`; 
+                con.innerHTML=`<img src="${u}" class="${f}" style="max-width:100%; max-height:100%; object-fit:contain;">`; 
             }
             
             if(m){ 
@@ -1275,11 +1241,11 @@
         
         // PICSART DRAW (FIXED BLANK CANVAS)
         let canvas,ctx,drawing=false; 
-        function openDrawModal(){
+        function openSnapDraw(){
             openModal('draw-modal'); 
             // DELAY TO ALLOW MODAL TO OPEN BEFORE SIZING CANVAS
             setTimeout(()=>{
-                canvas=document.getElementById('draw-canvas'); 
+                canvas=document.getElementById('snap-draw-canvas'); 
                 const parent = canvas.parentElement;
                 canvas.width=parent.offsetWidth; 
                 canvas.height=parent.offsetHeight; 
@@ -1294,11 +1260,11 @@
         function startDraw(e){e.preventDefault(); drawing=true; const r=canvas.getBoundingClientRect(); ctx.beginPath(); ctx.moveTo(e.touches[0].clientX-r.left, e.touches[0].clientY-r.top);}
         function moveDraw(e){e.preventDefault(); if(drawing){const r=canvas.getBoundingClientRect(); ctx.lineTo(e.touches[0].clientX-r.left, e.touches[0].clientY-r.top); ctx.stroke();}}
         function endDraw(){drawing=false;} 
-        function saveDrawing(){canvas.toBlob(b=>{uploadcare.fileFrom('object',b).done(i=>{tempFile=i; closeModal(null,'draw-modal'); openModal('caption-modal');})});}
-        function triggerDrawOverlay() { uploadcare.Widget('#draw-overlay-upload').openDialog(null,{imagesOnly:true}).done(f=>{f.done(i=>{ 
+        function saveSnapDrawing(){canvas.toBlob(b=>{uploadcare.fileFrom('object',b).done(i=>{tempFile=i; closeModal(null,'draw-modal'); openModal('caption-modal');})});}
+        function triggerDrawBaseUpload() { uploadcare.Widget('#draw-base-upload').openDialog(null,{imagesOnly:true}).done(f=>{f.done(i=>{ 
              const img = new Image(); img.crossOrigin="Anonymous"; img.src=i.cdnUrl; img.onload=()=>{ctx.drawImage(img,0,0,canvas.width,canvas.height);} 
         });}); }
-        function clearCanvas() { ctx.fillStyle="white"; ctx.fillRect(0,0,canvas.width,canvas.height); }
+        function clearSnapCanvas() { ctx.fillStyle="white"; ctx.fillRect(0,0,canvas.width,canvas.height); }
 
         // EDITOR PRO (FIXED CANVAS)
         let editorCanvas, eCtx, currentEditImg;
@@ -1351,5 +1317,6 @@
     </script>
 </body>
 </html>
+
 
 <!-- update for github pages -->
