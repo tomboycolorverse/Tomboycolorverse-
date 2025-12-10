@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#000000">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Tomboycolorverse</title>
     
     <script>
@@ -47,9 +48,11 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--dark-bg);
             color: white;
+            /* SAFE AREA FOR IPHONE NOTCH */
             padding-top: calc(80px + env(safe-area-inset-top)); 
-            padding-bottom: calc(90px + env(safe-area-inset-bottom));
+            padding-bottom: calc(100px + env(safe-area-inset-bottom));
             overflow-x: hidden;
+            /* WALLPAPER FIX */
             background-size: cover; 
             background-position: center center; 
             background-attachment: fixed; 
@@ -59,7 +62,6 @@
             overscroll-behavior-y: none;
         }
 
-        /* FIXED WALLPAPER LAYER */
         #wallpaper-layer {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -1;
@@ -102,33 +104,41 @@
             background-color: #222;
         }
 
-        /* --- STORIES --- */
+        /* --- STORIES (REVAMPED) --- */
         .stories-bar {
-            display: flex; gap: 12px; padding: 10px 15px; overflow-x: auto; scrollbar-width: none;
+            display: flex; gap: 12px; padding: 15px; overflow-x: auto; scrollbar-width: none;
+            background: rgba(0,0,0,0.3); border-bottom: 1px solid #333;
+            align-items: center;
         }
         .stories-bar::-webkit-scrollbar { display: none; }
 
         .story-circle {
             width: 75px; height: 75px; border-radius: 50%; padding: 3px;
-            background: linear-gradient(to right, red, orange, yellow, green, blue, violet);
+            /* Rainbow Ring for Active Stories */
+            background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
             flex-shrink: 0; cursor: pointer; position: relative;
+            animation: pulseRing 3s infinite;
         }
+        @keyframes pulseRing { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
+
         .story-inner {
-            width: 100%; height: 100%; border-radius: 50%; border: 3px solid #000;
-            background: #222; overflow: hidden; display: flex; align-items: center; justify-content: center;
-            position: relative;
+            width: 100%; height: 100%; border-radius: 50%; border: 2px solid #000;
+            background: #000; overflow: hidden; display: flex; align-items: center; justify-content: center;
+            position: relative; z-index: 5;
         }
+        
+        /* FIX: Ensure video fits circle */
         .story-inner img, .story-inner video { 
             width: 100%; height: 100%; object-fit: cover; 
             pointer-events: none; 
         }
-        .story-delete {
-            position: absolute; bottom: 0; right: 0; background: red; color: white;
-            border-radius: 50%; width: 22px; height: 22px; font-size: 14px;
-            display: flex; align-items: center; justify-content: center; z-index: 10;
-            border: 2px solid black;
+        
+        .add-story-btn {
+            width: 75px; height: 75px; border-radius: 50%; background: #222; border: 2px solid #555;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            color: white; cursor: pointer; flex-shrink: 0;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
-        .add-story-icon { font-size: 30px; color: white; }
 
         /* --- DASHBOARD --- */
         .dashboard-card {
@@ -147,25 +157,24 @@
         }
         .action-btn:active { transform: scale(0.95); }
 
+        /* BUTTON COLORS */
         .btn-upload { background: linear-gradient(90deg, #ff00cc, #3333ff); grid-column: 1; }
         .btn-draw { background: white; color: black; grid-column: 2; }
         .btn-quote { background: #222; border: 1px solid #555; }
         .btn-art { background: var(--neon-yellow); color: black; }
         .btn-chat { background: var(--neon-green); color: black; grid-column: 1; }
-        .btn-gif { background: #00ff9d; color: black; grid-column: 2; box-shadow: 0 0 10px rgba(0, 255, 157, 0.3); }
-        .btn-game { background: linear-gradient(45deg, #ff0000, #ffcc00); color: white; grid-column: 1 / span 2; box-shadow: 0 0 15px rgba(255,0,0,0.5); }
+        .btn-gif { background: #00ff9d; color: black; grid-column: 2; }
+        .btn-game { background: linear-gradient(45deg, #ff0000, #ffcc00); color: white; grid-column: 1 / span 2; }
         .btn-link { background: #ff4500; color: white; grid-column: 2; }
-        /* NEW BUTTONS */
-        .btn-run { background: linear-gradient(to right, #ff9966, #ff5e62); color: white; grid-column: 1; } /* REPLACED AVATAR */
-        .btn-radio { background: var(--radio-gold); color: black; grid-column: 1; box-shadow: 0 0 10px var(--radio-gold); } /* REPLACED DRAW */
-        
-        .btn-emerald { background: var(--emerald); color: white; grid-column: 1; box-shadow: 0 0 15px rgba(80, 200, 120, 0.6); }
+        .btn-emerald { background: var(--emerald); color: white; grid-column: 1; }
         .btn-sticker { background: var(--sticker-pink); color: white; grid-column: 2; }
-        .btn-reel { background: var(--reel-purple); color: white; grid-column: 2; box-shadow: 0 0 10px var(--reel-purple); }
+        .btn-reel { background: var(--reel-purple); color: white; grid-column: 1; box-shadow: 0 0 10px var(--reel-purple); }
         .btn-editor { background: var(--editor-orange); color: white; grid-column: 1; }
-        .btn-vibe { background: var(--vibe-blue); color: white; grid-column: 2; box-shadow: 0 0 10px var(--vibe-blue); }
-        .btn-memory { background: var(--game-red); color: white; grid-column: 1 / span 2; box-shadow: 0 0 10px var(--game-red); }
-        .btn-box { background: #666; color: white; grid-column: 2; border: 1px solid white; box-shadow: 0 0 10px white; }
+        .btn-vibe { background: var(--vibe-blue); color: white; grid-column: 2; }
+        .btn-memory { background: var(--game-red); color: white; grid-column: 1; }
+        .btn-box { background: #666; color: white; grid-column: 2; border: 1px solid white; }
+        .btn-run { background: linear-gradient(to right, #ff9966, #ff5e62); color: white; grid-column: 2; } 
+        .btn-radio { background: var(--radio-gold); color: black; grid-column: 1; }
 
         /* --- FEED --- */
         .feed-title { margin: 15px 15px 10px; font-size: 1.2rem; font-weight: 800; text-shadow: 1px 1px 2px black; display: flex; justify-content: space-between; }
@@ -181,16 +190,6 @@
             pointer-events: none; 
         }
         
-        /* FILTERS */
-        .filter-bw { filter: grayscale(100%); }
-        .filter-sepia { filter: sepia(80%); }
-        .filter-neon { filter: contrast(150%) hue-rotate(90deg); }
-        .filter-invert { filter: invert(100%); }
-        .filter-dreamy { filter: brightness(110%) contrast(90%) saturate(120%) blur(0.5px); }
-        
-        /* LENS OVERLAY */
-        .lens-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; object-fit: contain; z-index: 5; opacity: 0.9; }
-
         .card-footer {
             padding: 10px; display: flex; justify-content: space-between; align-items: center;
             background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
@@ -202,7 +201,6 @@
         }
         .card-caption { font-size: 0.8rem; color: white; text-shadow: 1px 1px 2px black; overflow: hidden; white-space: nowrap; max-width: 50%; }
         
-        /* EDIT PENCIL */
         .edit-pencil { 
             position: absolute; top: 10px; right: 10px; 
             background: rgba(0,0,0,0.6); padding: 8px; border-radius: 50%; 
@@ -258,7 +256,6 @@
             padding: 20px; border: 1px solid #333; text-align: center; position: relative;
             max-height: 80vh; overflow-y: auto;
         }
-        /* BIG RED CLOSE BUTTON */
         .close-modal-btn { 
             position: absolute; top: 10px; right: 10px; 
             font-size: 1.5rem; color: #fff; cursor: pointer; 
@@ -293,7 +290,6 @@
         .cell-x { color: var(--neon-pink); } .cell-o { color: var(--neon-blue); }
         .tictac-status { font-size: 1.2rem; margin-bottom: 10px; color: var(--neon-yellow); }
         
-        /* EMERALD BOT STYLES */
         .emerald-msg { padding: 10px; margin: 5px 0; border-radius: 15px; max-width: 80%; }
         .emerald-bot-msg { background: #1e3d2f; color: #aaffc3; align-self: flex-start; text-align: left; border: 1px solid var(--emerald); }
         .emerald-user-msg { background: #333; color: white; align-self: flex-end; text-align: right; }
@@ -311,12 +307,14 @@
             display: flex; flex-direction: column; align-items: center;
             position: fixed; top: 0; left: 0; width: 100%; z-index: 5000;
         }
+        
+        .auth-form { width: 80%; max-width: 300px; display: none; flex-direction: column; gap: 10px; }
 
         /* ANIMAL GAME CANVAS */
         #run-canvas { background: #222; border: 2px solid white; display:block; margin: 0 auto; border-radius: 10px; touch-action: none; }
         
         /* SNAP DRAW CANVAS */
-        #snap-draw-canvas { width: 100%; height: 300px; object-fit: contain; border: 1px solid #444; background: #000; touch-action: none; }
+        #snap-draw-canvas { width: 100%; height: 300px; object-fit: contain; border: 1px solid #444; background: #000; touch-action; }
     </style>
 </head>
 <body>
@@ -325,17 +323,27 @@
 
     <div id="auth-screen">
         <h1 class="rainbow-text" style="font-size: 2.2rem; margin-bottom: 30px;">Tomboycolorverse</h1>
-        <input type="email" id="email" class="text-input" placeholder="Email" style="width:80%; max-width:300px;">
-        <input type="text" id="username-signup" class="text-input" placeholder="Create Username" style="width:80%; max-width:300px;">
-        <input type="password" id="password" class="text-input" placeholder="Password" style="width:80%; max-width:300px;">
-        <div style="margin-top: 20px; width: 80%; max-width:300px;">
-            <button class="action-btn btn-upload" style="width:100%; justify-content:center; margin-bottom:10px;" onclick="handleLogin()">LOGIN</button>
-            <button class="action-btn btn-quote" style="width:100%; justify-content:center;" onclick="handleRegister()">CREATE ACCOUNT</button>
+        <div id="auth-buttons" style="display:flex; flex-direction:column; gap:10px; width:80%; max-width:300px;">
+            <button class="action-btn btn-upload" style="justify-content:center;" onclick="showLogin()">LOGIN</button>
+            <button class="action-btn btn-quote" style="justify-content:center;" onclick="showRegister()">CREATE ACCOUNT</button>
+        </div>
+        <div id="login-form" class="auth-form">
+            <input type="email" id="login-email" class="text-input" placeholder="Email">
+            <input type="password" id="login-pass" class="text-input" placeholder="Password">
+            <button class="action-btn btn-upload" style="justify-content:center;" onclick="handleLogin()">ENTER</button>
+            <button class="action-btn" style="background:transparent; border:none; color:#888;" onclick="showAuthButtons()">Back</button>
+        </div>
+        <div id="register-form" class="auth-form">
+            <input type="text" id="reg-username" class="text-input" placeholder="Username">
+            <input type="email" id="reg-email" class="text-input" placeholder="Email">
+            <input type="password" id="reg-pass" class="text-input" placeholder="Password">
+            <button class="action-btn btn-quote" style="justify-content:center;" onclick="handleRegister()">JOIN</button>
+            <button class="action-btn" style="background:transparent; border:none; color:#888;" onclick="showAuthButtons()">Back</button>
         </div>
         <p id="login-status" style="color: #ff00cc; margin-top: 20px;"></p>
     </div>
 
-    <div id="app-screen" class="app-container">
+    <div id="app-screen" class="app-container" style="display:none;">
         
         <div class="header">
             <span class="rainbow-text" style="font-size: 1.4rem;">Tomboycolorverse</span>
@@ -346,10 +354,10 @@
         </div>
 
         <div class="stories-bar" id="stories-container">
-            <div class="story-circle" onclick="triggerStoryUpload()">
-                <div class="story-inner"><span class="add-story-icon">+</span></div>
+            <div class="add-story-btn" onclick="openModal('reel-maker-modal')">
+                <span style="font-size:1.5rem;">+</span>
             </div>
-            </div>
+        </div>
 
         <div id="profile-header">
             <img id="profile-view-img" src="https://placekitten.com/100/100" class="big-avatar">
@@ -363,18 +371,22 @@
         <div id="dashboard-box" class="dashboard-card">
             <div class="create-title">Create New</div>
             <input type="hidden" role="uploadcare-uploader" id="post-upload" />
-            <input type="hidden" role="uploadcare-uploader" id="story-upload" />
             <input type="hidden" role="uploadcare-uploader" id="reel-upload" />
             <input type="hidden" role="uploadcare-uploader" id="avatar-upload" data-crop="1:1" data-images-only="true" />
             <input type="hidden" role="uploadcare-uploader" id="wallpaper-upload" data-images-only="true" />
             <input type="hidden" role="uploadcare-uploader" id="editor-upload" data-images-only="true" />
-            <input type="hidden" role="uploadcare-uploader" id="draw-overlay-upload" data-images-only="true" />
+            <input type="hidden" role="uploadcare-uploader" id="draw-overlay-upload" data-images-only="true" /> 
+
+<input type="hidden" role="uploadcare-uploader" id="post-upload" />
+<input type="hidden" role="uploadcare-uploader" id="reel-upload" />
+<input type="hidden" role="uploadcare-uploader" id="avatar-upload" data-crop="1:1" data-images-only="true" />
+<input type="hidden" role="uploadcare-uploader" id="wallpaper-upload" data-images-only="true" />
+<input type="hidden" role="uploadcare-uploader" id="editor-upload" data-images-only="true" />
+<input type="hidden" role="uploadcare-uploader" id="draw-overlay-upload" data-images-only="true" />
 
             <div class="action-grid">
                 <button class="action-btn btn-upload" onclick="triggerPostUpload()"><i class="fas fa-cloud-upload-alt"></i> Upload</button>
-                
-                <button class="action-btn btn-radio" onclick="openRadio()"><i class="fas fa-music"></i> Galaxy Radio</button>
-                
+                <button class="action-btn btn-draw" onclick="openSnapDraw()"><i class="fas fa-pencil-alt"></i> Draw</button>
                 <button class="action-btn btn-quote" onclick="openModal('quote-modal')"><i class="fas fa-font"></i> Quote</button>
                 <button class="action-btn btn-art" onclick="openModal('art-modal')"><i class="fas fa-magic"></i> Art AI</button>
                 <button class="action-btn btn-chat" onclick="openModal('chat-modal')"><i class="fas fa-comments"></i> Global</button>
@@ -382,16 +394,15 @@
                 <button class="action-btn btn-game" onclick="openGameModal()"><i class="fas fa-gamepad"></i> Tic Tac Toe</button>
                 <button class="action-btn btn-link" onclick="openModal('link-post-modal')"><i class="fas fa-link"></i> Link</button>
                 
-                <button class="action-btn btn-run" onclick="startRainbowRun()"><i class="fas fa-paw"></i> Multiverse Run</button>
-                
+                <button class="action-btn btn-run" onclick="startRainbowRun()"><i class="fas fa-paw"></i> Rainbow Run</button>
                 <button class="action-btn btn-emerald" onclick="openEmeraldChat()"><i class="fas fa-robot"></i> Emerald</button>
                 <button class="action-btn btn-sticker" onclick="openModal('sticker-modal')"><i class="fas fa-sticky-note"></i> Sticker</button>
                 <button class="action-btn btn-reel" onclick="openModal('reel-maker-modal')"><i class="fas fa-film"></i> Story Reel</button>
-                <button class="action-btn btn-draw" onclick="openSnapDraw()"><i class="fas fa-pencil-alt"></i> Snap Draw</button>
                 <button class="action-btn btn-editor" onclick="openPhotoEditor()"><i class="fas fa-magic"></i> Editor Pro</button>
                 <button class="action-btn btn-vibe" onclick="openDailyVibe()"><i class="fas fa-star"></i> Daily Vibe</button>
                 <button class="action-btn btn-memory" onclick="startMemoryGame()"><i class="fas fa-brain"></i> Memory Game</button>
                 <button class="action-btn btn-box" onclick="openMysteryBox()"><i class="fas fa-gift"></i> Mystery Box</button>
+                <button class="action-btn btn-radio" onclick="openRadio()"><i class="fas fa-music"></i> Galaxy Radio</button>
             </div>
         </div>
 
@@ -412,12 +423,7 @@
         <div class="modal-content">
             <span class="close-modal-btn" onclick="closeModal(null, 'run-modal')">&times;</span>
             <h3>🌌 Rainbow Run</h3>
-            <div style="display:flex; gap:5px; margin-bottom:10px;">
-                <button class="action-btn btn-quote" onclick="selectWorld('forest')">🌳 Forest</button>
-                <button class="action-btn btn-quote" onclick="selectWorld('space')">🚀 Space</button>
-                <button class="action-btn btn-quote" onclick="selectWorld('water')">🌊 Aqua</button>
-            </div>
-            <p id="world-title">Select World!</p>
+            <p>Tap to Jump! Avoid Cacti 🌵</p>
             <canvas id="run-canvas" width="300" height="200"></canvas>
             <p id="run-score">Score: 0</p>
             <button class="action-btn btn-game" onclick="initRainbowRun()">START</button>
@@ -428,18 +434,16 @@
         <div class="modal-content">
             <span class="close-modal-btn" onclick="closeModal(null, 'radio-modal')">&times;</span>
             <h3>📻 Galaxy Radio</h3>
-            <div id="visualizer" style="display:flex; gap:2px; height:50px; justify-content:center; align-items:flex-end;">
-                <div style="width:10px; height:20px; background:var(--neon-pink); animation:bounce 0.5s infinite;"></div>
-                <div style="width:10px; height:40px; background:var(--neon-blue); animation:bounce 0.7s infinite;"></div>
-                <div style="width:10px; height:30px; background:var(--neon-green); animation:bounce 0.6s infinite;"></div>
+            <p style="font-size:0.8rem; color:#aaa;">Tap START to enable sound</p>
+            <button id="radio-start-btn" class="action-btn btn-radio" style="width:100%; margin-bottom:10px;" onclick="initRadio()">▶️ START RADIO</button>
+            <input type="text" id="radio-search" class="text-input" placeholder="Search Song (e.g. Drake)">
+            <button class="action-btn btn-radio" onclick="searchAndPlayRadio()">🔎 Search & Play</button>
+            <div style="margin-top:10px; display:flex; gap:5px;">
+                 <button class="action-btn btn-quote" onclick="playStation('PLMC9KNkIncKtPzgY-5rmhvj7jy8jP1r68')">90s</button>
+                 <button class="action-btn btn-quote" onclick="playStation('RDCLAK5uy_kpsWRj59o6H1zW46lC9h3r7sJ8j3i7i84')">2000s</button>
+                 <button class="action-btn btn-quote" onclick="playStation('jfKfPfyJRdk')">Lofi</button>
             </div>
-            <style>@keyframes bounce { 0%,100% {height:10px;} 50% {height:40px;} }</style>
-            <br>
-            <button class="action-btn btn-quote" onclick="playStation('PLMC9KNkIncKtPzgY-5rmhvj7jy8jP1r68')">🎤 Pop Divas</button>
-            <button class="action-btn btn-quote" onclick="playStation('RDCLAK5uy_kpsWRj59o6H1zW46lC9h3r7sJ8j3i7i84')">🔥 Hip Hop Hits</button>
-            <button class="action-btn btn-quote" onclick="playStation('jfKfPfyJRdk')">🎧 Lofi Girl Live</button>
-            <button class="action-btn btn-quote" onclick="searchSong()">🔍 Search Song</button>
-            <div id="radio-player" style="margin-top:10px; display:none;"></div>
+            <div id="radio-player" style="margin-top:10px;"></div>
         </div>
     </div>
 
@@ -467,7 +471,6 @@
         <div class="modal-content">
             <span class="close-modal-btn" onclick="closeModal(null, 'memory-modal')">&times;</span>
             <h3>🧠 Memory Match</h3>
-            <p>Find matches!</p>
             <div id="memory-grid" class="memory-grid"></div>
             <button class="action-btn btn-game" style="margin-top:10px;" onclick="startMemoryGame()">Reset</button>
         </div>
@@ -478,7 +481,6 @@
             <span class="close-modal-btn" onclick="closeModal(null, 'vibe-modal')">&times;</span>
             <h1 style="font-size:3rem;">✨</h1>
             <h2 id="vibe-text">You are Magic!</h2>
-            <p>Your Daily Vibe</p>
             <button class="action-btn" style="background:white; color:black; margin-top:10px;" onclick="shareVibe()">POST TO FEED</button>
         </div>
     </div>
@@ -506,8 +508,8 @@
             <span class="close-modal-btn" onclick="closeModal(null, 'reel-maker-modal')">&times;</span>
             <h3>Story Reel Maker 🎬</h3>
             <button class="action-btn btn-upload" style="width:100%; margin-bottom:10px;" onclick="triggerReelUpload()">Upload Video</button>
-            <p>Add Music?</p>
-            <input type="text" id="reel-custom-music" class="text-input" placeholder="Paste YouTube Link (Song)...">
+            <p>Add Song?</p>
+            <input type="text" id="reel-custom-music" class="text-input" placeholder="Paste YouTube Link or MP3...">
             <button class="action-btn btn-reel" style="width:100%" onclick="finalizeReel()">POST TO STORY</button>
         </div>
     </div>
@@ -517,7 +519,7 @@
             <span class="close-modal-btn" onclick="closeModal(null, 'emerald-modal')">&times;</span>
             <h3 style="color:var(--emerald);">🤖 Chat with Emerald</h3>
             <div id="emerald-chat-box" style="flex:1; overflow-y:auto; background:#111; padding:10px; border-radius:10px; display:flex; flex-direction:column;">
-                <div class="emerald-msg emerald-bot-msg">Hello! I am Emerald. How can I help you? ✨</div>
+                <div class="emerald-msg emerald-bot-msg">Hello! I am Emerald. ✨</div>
             </div>
             <div style="display:flex; gap:5px; margin-top:10px;">
                 <input type="text" id="emerald-input" class="text-input" style="margin:0;" placeholder="Ask Emerald anything...">
@@ -708,8 +710,23 @@
         let isScrolling = false;
         let quizScore = 0;
         let currentQuizSong = null;
+        let radioPlayer = null;
 
         // --- AUTH ---
+        function showLogin() {
+            document.getElementById('auth-buttons').style.display = 'none';
+            document.getElementById('login-form').style.display = 'flex';
+        }
+        function showRegister() {
+            document.getElementById('auth-buttons').style.display = 'none';
+            document.getElementById('register-form').style.display = 'flex';
+        }
+        function showAuthButtons() {
+            document.getElementById('auth-buttons').style.display = 'flex';
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'none';
+        }
+
         auth.onAuthStateChanged((user) => {
             if (user) {
                 currentUser = user;
@@ -717,23 +734,25 @@
                 document.getElementById('app-screen').style.display = 'block';
                 loadUserData(); 
                 loadGlobalFeed();
+                loadStories(); // Load stories immediately
             } else {
                 document.getElementById('auth-screen').style.display = 'flex';
                 document.getElementById('app-screen').style.display = 'none';
+                showAuthButtons();
                 document.body.style.backgroundImage = ''; 
                 document.getElementById('wallpaper-layer').style.backgroundImage = '';
             }
         });
 
         function handleLogin() {
-            const e = document.getElementById('email').value;
-            const p = document.getElementById('password').value;
+            const e = document.getElementById('login-email').value;
+            const p = document.getElementById('login-pass').value;
             auth.signInWithEmailAndPassword(e, p).catch(err => document.getElementById('login-status').innerText = err.message);
         }
         function handleRegister() {
-            const e = document.getElementById('email').value;
-            const p = document.getElementById('password').value;
-            const u = document.getElementById('username-signup').value;
+            const e = document.getElementById('reg-email').value;
+            const p = document.getElementById('reg-pass').value;
+            const u = document.getElementById('reg-username').value;
             auth.createUserWithEmailAndPassword(e, p).then(cred => {
                 db.collection("users").doc(cred.user.uid).set({ username: u, email: e, avatarUrl: "https://placekitten.com/50/50" });
             }).catch(err => document.getElementById('login-status').innerText = err.message);
@@ -744,8 +763,12 @@
         let startX, startY, startTime;
         window.addEventListener('scroll', () => {
             isScrolling = true;
+            document.body.style.pointerEvents = 'none'; 
             clearTimeout(window.scrollTimeout);
-            window.scrollTimeout = setTimeout(() => { isScrolling = false; }, 250);
+            window.scrollTimeout = setTimeout(() => { 
+                isScrolling = false; 
+                document.body.style.pointerEvents = 'auto'; 
+            }, 150);
         });
 
         // --- NAVIGATION SAFETY ---
@@ -754,6 +777,7 @@
             window.scrollTo(0,0);
             document.getElementById('feed-container').innerHTML = ''; 
             loadGlobalFeed();
+            loadStories();
             if(myWallpaper) {
                 const layer = document.getElementById('wallpaper-layer');
                 if(myWallpaper.startsWith('http') || myWallpaper.startsWith('data:')) layer.style.backgroundImage = `url('${myWallpaper}')`;
@@ -773,7 +797,6 @@
             document.getElementById('feed-label-text').innerText = "Global Feed";
             if(unsubscribeFeed) unsubscribeFeed();
             unsubscribeFeed = db.collection("posts").orderBy("timestamp", "desc").onSnapshot(renderFeed);
-            loadStories();
         }
 
         function loadUserProfile(targetUid) {
@@ -832,7 +855,8 @@
                      content = `<div class="feed-media-container"><img src="${thumb}" style="width:100%; height:100%; object-fit:cover; opacity:0.7;" onerror="this.parentElement.style.display='none'"><i class="fas fa-play-circle" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:3rem; color:white;"></i></div>`;
                 } else {
                     const filterClass = d.filter || ''; 
-                    const media = d.type === 'video' ? `<video src="${d.url}" class="${filterClass}" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover; pointer-events:none;"></video>` : `<img src="${d.url}" class="${filterClass}" onerror="this.parentElement.style.display='none'">`;
+                    // BLANK BOX FIX: ON ERROR HIDE + PLAYSINLINE MANDATORY
+                    const media = d.type === 'video' ? `<video src="${d.url}" class="${filterClass}" playsinline webkit-playsinline muted autoplay loop style="width:100%; height:100%; object-fit:cover; pointer-events:none;"></video>` : `<img src="${d.url}" class="${filterClass}" onerror="this.parentElement.style.display='none'">`;
                     content = `<div class="feed-media-container">${media}</div>`;
                 }
 
@@ -912,8 +936,11 @@
             chatBox.innerHTML += `<div class="emerald-msg emerald-user-msg">${msg}</div>`;
             input.value = '';
             
+            // SYSTEM PROMPT FOR DATE
+            const systemPrompt = `System: The current date is ${new Date().toDateString()}. You are Emerald, a helpful AI assistant. User says: ${msg}`;
+            
             try {
-                const url = `https://text.pollinations.ai/${encodeURIComponent(msg + " (Respond as Emerald, a helpful AI assistant)")}`;
+                const url = `https://text.pollinations.ai/${encodeURIComponent(systemPrompt)}`;
                 const res = await fetch(url);
                 const text = await res.text();
                 chatBox.innerHTML += `<div class="emerald-msg emerald-bot-msg">${text}</div>`;
@@ -1016,37 +1043,29 @@
         function updateRainbowRun(){
             if(!rGameRunning) return;
             
-            // Theme Changes
             if(rWorld === 'forest') rCtx.fillStyle = '#87CEEB'; 
             if(rWorld === 'space') rCtx.fillStyle = '#000033'; 
             if(rWorld === 'water') rCtx.fillStyle = '#0066cc'; 
 
             rCtx.fillRect(0,0,300,150);
             
-            // Gravity
             playerVelocity += 0.6; 
             playerY += playerVelocity;
-            if(playerY > 120) { playerY = 120; playerVelocity = 0; } // Ground
+            if(playerY > 120) { playerY = 120; playerVelocity = 0; } 
 
-            // Draw Player (Changes Animal)
             rCtx.font = "30px Arial"; 
             let char = "🐨";
             if(rWorld === 'space') char = "👽";
             if(rWorld === 'water') char = "🐬";
-            
-            // Evolution
             if(rScore >= 10 && rWorld === 'forest') char = "🐼";
-            if(rScore >= 20 && rWorld === 'forest') char = "🐯";
             
             rCtx.fillText(char, 30, playerY);
 
-            // Obstacles
             if(Math.random() < 0.02 + (rScore * 0.001)) pipes.push({x:300});
             for(let i=0; i<pipes.length; i++){
                 pipes[i].x -= (3 + (rScore * 0.1));
                 rCtx.fillText("🍄", pipes[i].x, 140);
                 if(pipes[i].x < -30) { pipes.splice(i,1); i--; rScore++; }
-                // Collision
                 if(Math.abs(pipes[i].x - 30) < 20 && playerY > 110) {
                     rGameRunning = false; alert("Game Over! Score: "+rScore);
                 }
@@ -1056,26 +1075,40 @@
         }
         function startRainbowRun(){ openModal('run-modal'); }
 
-        // --- GALAXY RADIO (REAL MUSIC) ---
+        // --- GALAXY RADIO (REAL MUSIC - SEARCH) ---
         function openRadio() { openModal('radio-modal'); }
-        function playStation(playlistId){
-             if(radioPlayer) {
-                 radioPlayer.loadPlaylist({list:playlistId, listType:'playlist'});
-             } else {
-                 document.getElementById('radio-player').innerHTML = `<iframe width="100%" height="200" src="https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=1" frameborder="0" allow="autoplay"></iframe>`;
-                 document.getElementById('radio-player').style.display = 'block';
-             }
+        function initRadio() {
+             document.getElementById('radio-start-btn').style.display='none';
+             // Load a silent iframe to trigger audio context
+             document.getElementById('radio-player').innerHTML = '<iframe width="100%" height="200" src="https://www.youtube.com/embed/jfKfPfyJRdk?playsinline=1" frameborder="0" allow="autoplay; encrypted-media"></iframe>';
+             document.getElementById('radio-player').style.display = 'block';
         }
-        function searchSong() {
-            const s = prompt("Type song name (e.g. Mariah Carey):");
-            if(s) window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(s)}`, '_blank');
+        function searchAndPlayRadio(){
+             const term = document.getElementById('radio-search').value;
+             if(!term) return;
+             document.getElementById('radio-player').innerHTML = `<iframe width="100%" height="200" src="https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(term)}&autoplay=1&playsinline=1" frameborder="0" allow="autoplay; encrypted-media"></iframe>`;
+        }
+        function playStation(playlistId){
+             document.getElementById('radio-player').innerHTML = `<iframe width="100%" height="200" src="https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=1&playsinline=1" frameborder="0" allow="autoplay; encrypted-media"></iframe>`;
+             document.getElementById('radio-player').style.display = 'block';
         }
 
         // --- UPLOADS & CREATION ---
-        function triggerPostUpload() { uploadcare.Widget('#post-upload').openDialog(null,{imagesOnly:false,crop:null}).done(f=>{f.done(i=>{tempFile=i; openModal('caption-modal');});}); }
-        function triggerStoryUpload() { uploadcare.Widget('#story-upload').openDialog(null,{imagesOnly:false,crop:null}).done(f=>{f.done(i=>{tempFile=i; openModal('story-upload-modal');});}); }
-        function triggerReelUpload() { uploadcare.Widget('#reel-upload').openDialog(null,{imagesOnly:false,crop:null}).done(f=>{f.done(i=>{tempFile=i; openModal('reel-maker-modal');});}); }
-        function finalizeStory() { 
+       function triggerReelUpload() { uploadcare.Widget('#reel-upload').openDialog(null,{imagesOnly:false,crop:null}).done(f=>{f.done(i=>{tempFile=i; openModal('reel-maker-modal');});}); }
+        function triggerPostUpload() { ... }
+
+function triggerStoryUpload() {
+    uploadcare.Widget('#story-upload')
+        .openDialog(null, { imagesOnly: false, crop: null })
+        .done(file => {
+            file.done(info => {
+                tempFile = info;
+                openModal('reel-maker-modal'); 
+            });
+        });
+}
+
+function triggerReelUpload() { ... } function finalizeStory() { 
             const f=document.getElementById('story-filter-select').value; 
             const m=document.getElementById('story-music-select').value; 
             const cm=document.getElementById('custom-music-url').value; 
@@ -1087,12 +1120,23 @@
             confetti();
         }
         function finalizePost() { const c=document.getElementById('post-caption-input').value; const iv=tempFile.mimeType&&tempFile.mimeType.includes('video'); db.collection("posts").add({url:tempFile.cdnUrl, caption:c, type:iv?'video':'image', reactions:{}, timestamp:firebase.firestore.FieldValue.serverTimestamp(), userId:currentUser.uid}); closeModal(null,'caption-modal'); confetti(); }
+        
+        // FIXED FINALIZEREEL FUNCTION
         function finalizeReel() {
-            const caption = document.getElementById('reel-caption').value;
-            const music = document.getElementById('reel-custom-music').value;
-            const iv=tempFile.mimeType&&tempFile.mimeType.includes('video');
+            // Updated to grab correct input ID for music/caption
+            const musicInput = document.getElementById('reel-custom-music');
+            const music = musicInput ? musicInput.value : '';
+            
+            // Check if file is video
+            const iv = tempFile.mimeType && tempFile.mimeType.includes('video');
+            
             db.collection("stories").add({ 
-                url: tempFile.cdnUrl, type: iv?'video':'image', userId: currentUser.uid, music: music, filter:'', lens:'',
+                url: tempFile.cdnUrl, 
+                type: iv ? 'video' : 'image', 
+                userId: currentUser.uid, 
+                music: music, 
+                filter:'', 
+                lens:'',
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
             closeModal(null, 'reel-maker-modal');
@@ -1120,20 +1164,37 @@
             closeModal(null, 'link-post-modal');
         }
 
-        // --- VIEWER & STORIES ---
+        // --- VIEWER & STORIES (REVAMPED: PREVIEW & AUTOPLAY) ---
         function loadStories(){
             db.collection("stories").orderBy("timestamp","desc").onSnapshot(s=>{
                 const c=document.getElementById('stories-container'); 
-                while(c.children.length>1)c.removeChild(c.lastChild); 
+                // Reset container but keep the add button
+                c.innerHTML = '<div class="add-story-btn" onclick="triggerStoryUpload()"><span style="font-size:1.5rem;">+</span></div>';
+                
                 s.forEach(d=>{
-                    const dd=d.data(); const div=document.createElement('div'); div.className='story-circle'; 
-                    const f = dd.filter || '';
-                    const m=dd.type==='video'?`<video src="${dd.url}" class="${f}" autoplay muted loop playsinline></video>`:`<img src="${dd.url}" class="${f}">`; 
-                    const mi=dd.music?'<i class="fas fa-music" style="position:absolute; bottom:-5px; left:25px; color:var(--neon-green); font-size:12px; background:black; border-radius:50%; padding:2px;"></i>':''; 
-                    div.innerHTML=`<div class="story-inner">${m}</div>${mi}`; 
+                    const dd=d.data(); 
+                    const div=document.createElement('div'); div.className='story-circle'; 
+                    
+                    // PREVIEW LOGIC: IF VIDEO -> SHOW ACTUAL VIDEO LOOP
+                    let preview = '';
+                    if(dd.type === 'video') {
+                        // FIX: ADD TIME HACK #t=0.01 TO FORCE THUMBNAIL LOAD ON IOS
+                        let videoSrc = dd.url;
+                        if (!videoSrc.includes('#')) {
+                            videoSrc += '#t=0.01';
+                        }
+                        
+                        // FIXED: Show small muted video loop inside the circle with playsinline to prevent full screen
+                        preview = `<video src="${videoSrc}" muted autoplay loop playsinline webkit-playsinline preload="auto" style="width:100%; height:100%; object-fit:cover; pointer-events:none;"></video>`;
+                    } else {
+                        preview = `<img src="${dd.url}" style="width:100%; height:100%; object-fit:cover;">`;
+                    }
+
+                    div.innerHTML=`<div class="story-inner">${preview}</div>`; 
                     div.onclick=(e)=>{ 
                          if(isScrolling) return;
-                         if(!e.target.closest('.story-delete')) openViewer(dd.url,dd.type,"Story",dd.music, f, d.id, dd.userId, dd.lens); 
+                         // OPEN VIEWER with correct type
+                         openViewer(dd.url, dd.type, "Story", dd.music, '', d.id, dd.userId, ''); 
                     }; 
                     c.appendChild(div);
                 });
@@ -1146,28 +1207,59 @@
             return (match&&match[7].length==11)? match[7] : false;
         }
 
+        // --- FIXED OPENVIEWER FUNCTION (Sound on Autoplay) ---
         function openViewer(u,t,c,m, fClass, sId, sUserId, lens){
-            const con=document.getElementById('viewer-container'); const f=fClass||'';
-            
+            const con=document.getElementById('viewer-container'); 
+            const f=fClass||'';
+            con.innerHTML = ''; // Clear previous
+
             if(t === 'smart-video' || t === 'youtube' || t === 'video-link') {
                 const ytId = extractYouTubeID(u);
-                if(ytId) con.innerHTML = `<iframe width="100%" height="400" src="https://www.youtube.com/embed/${ytId}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+                if(ytId) con.innerHTML = `<iframe width="100%" height="400" src="https://www.youtube.com/embed/${ytId}?autoplay=1&playsinline=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
                 else con.innerHTML = `<video src="${u}" controls autoplay style="max-width:100%; max-height:100%;"></video>`;
-            } else if(t==='video') {
-                con.innerHTML=`<video src="${u}" class="${f}" controls autoplay playsinline style="max-width:100%; max-height:100%; object-fit:contain;"></video>`; 
+            
+            } else if(t === 'video') {
+                // FIXED VIDEO LOGIC: Create Element to allow Autoplay with Sound
+                const vid = document.createElement('video');
+                vid.src = u;
+                vid.className = f;
+                vid.controls = true; // Show controls so they can unmute if autoplay blocks sound
+                vid.autoplay = true;     // Attempt autoplay
+                vid.playsInline = true;  // Required for iOS
+                vid.style.maxWidth = "100%";
+                vid.style.maxHeight = "100%";
+                vid.style.objectFit = "contain";
+                
+                // Add to DOM
+                con.appendChild(vid);
+                
+                // Force play command (works because user clicked story circle)
+                vid.oncanplay = () => {
+                   vid.play().catch(err => console.log("Auto-play blocked:", err));
+                   vid.muted = false; // Unmute
+                };
+
             } else {
+                // Image handling
                 con.innerHTML=`<img src="${u}" class="${f}" style="max-width:100%; max-height:100%; object-fit:contain;">`; 
             }
             
-            if(m){ 
+            // Handle Extra Background Music (if video doesn't have it)
+            if(m && t !== 'video'){ 
                 if(currentAudio) currentAudio.pause();
                 const ytId = extractYouTubeID(m);
-                if(ytId) con.innerHTML += `<iframe width="1" height="1" src="https://www.youtube.com/embed/${ytId}?autoplay=1&loop=1&playlist=${ytId}" frameborder="0" allow="autoplay"></iframe>`;
-                else { currentAudio=new Audio(m); currentAudio.loop=true; currentAudio.play(); }
+                if(ytId) con.innerHTML += `<iframe width="1" height="1" src="https://www.youtube.com/embed/${ytId}?autoplay=1&loop=1&playlist=${ytId}&playsinline=1" frameborder="0" allow="autoplay"></iframe>`;
+                else { currentAudio=new Audio(m); currentAudio.loop=true; currentAudio.play().catch(e=>console.log(e)); }
             }
+            
             document.getElementById('viewer-caption').innerText=c||""; 
             const del=document.getElementById('viewer-delete-btn');
-            if(sId && sUserId === currentUser.uid) { del.style.display='block'; del.onclick=()=>{deletePost(sId,'stories',event); closeModal(null,'viewer-modal');}; } else del.style.display='none';
+            if(sId && sUserId === currentUser.uid) { 
+                del.style.display='block'; 
+                del.onclick=()=>{ deletePost(sId,'stories',event); closeModal(null,'viewer-modal'); }; 
+            } else {
+                del.style.display='none';
+            }
             openModal('viewer-modal');
         }
 
@@ -1197,48 +1289,6 @@
         // AI WALLPAPER: RANDOM SEED
         function generateAIWallpaper() { const p=document.getElementById('wp-prompt').value; if(!p)return alert("Prompt!"); document.getElementById('gen-wp-btn').innerText="Generating..."; const u=`https://image.pollinations.ai/prompt/${encodeURIComponent(p)}?width=500&height=1000&n=${Math.random()}`; const i=new Image(); i.onload=()=>{db.collection("users").doc(currentUser.uid).set({wallpaperUrl:u},{merge:true}); document.getElementById('wallpaper-layer').style.background=''; document.getElementById('wallpaper-layer').style.backgroundImage=`url('${u}')`; closeModal(null,'ai-wallpaper-modal'); closeModal(null,'profile-modal'); document.getElementById('gen-wp-btn').innerText="GENERATE & SET";}; i.src=u;}
 
-        // AVATAR STUDIO: FIXED DICEBEAR 7.x
-        function updateAvatarPreview() {
-            if(!currentUser) return;
-            const seed = currentUser.uid;
-            // Add Randomness to avoid caching
-            const rand = Math.random();
-            const skin = document.getElementById('av-skin').value || 'f2d3b1';
-            const hair = document.getElementById('av-hair').value || 'short01';
-            const hairColor = document.getElementById('av-haircolor').value || '4a312c';
-            
-            const url = `https://api.dicebear.com/7.x/adventurer/svg?seed=${seed}&skinColor=${skin}&hair=${hair}&hairColor=${hairColor}&r=${rand}`;
-            document.getElementById('avatar-preview').src = url;
-            return url;
-        }
-        function randomizeAvatar() {
-            const hairs = ['short01', 'long01', 'curly01'];
-            document.getElementById('av-hair').value = hairs[Math.floor(Math.random() * hairs.length)];
-            updateAvatarPreview();
-        }
-
-        function saveAvatar() {
-            const url = updateAvatarPreview();
-            db.collection("users").doc(currentUser.uid).set({ avatarUrl: url }, { merge: true });
-            closeModal(null, 'avatar-studio-modal');
-            confetti();
-        }
-
-        function updateUsername(){const n=document.getElementById('update-username').value; if(n){db.collection("users").doc(currentUser.uid).set({username:n},{merge:true}); alert("Updated!");}}
-        function triggerAvatarUpload(){uploadcare.Widget('#avatar-upload').openDialog(null,{imagesOnly:true,crop:"1:1"}).done(f=>{f.done(i=>{db.collection("users").doc(currentUser.uid).set({avatarUrl:i.cdnUrl},{merge:true}); closeModal(null,'profile-modal');});});}
-        function triggerWallpaperUpload(){uploadcare.Widget('#wallpaper-upload').openDialog(null,{imagesOnly:true,crop:null}).done(f=>{f.done(i=>{db.collection("users").doc(currentUser.uid).set({wallpaperUrl:i.cdnUrl},{merge:true}); closeModal(null,'profile-modal');});});}
-
-        // --- HELPERS ---
-        function deletePost(i,c,e){if(e)e.stopPropagation(); if(confirm("Delete?"))db.collection(c).doc(i).delete();}
-        function toggleReactionMenu(id,e){e.stopPropagation(); const m=document.getElementById(id); m.style.display=(m.style.display==='flex')?'none':'flex';}
-        function reactPost(e, pid, em){e.stopPropagation(); const u={}; u[`reactions.${currentUser.uid}`]=em; db.collection("posts").doc(pid).update(u).catch(()=>{db.collection("posts").doc(pid).set({reactions:{[currentUser.uid]:em}},{merge:true})}); document.getElementById(`react-menu-${pid}`).style.display='none';}
-        function openComments(pid){openModal('comments-modal'); document.getElementById('current-post-id').value=pid; const l=document.getElementById('comments-list'); l.innerHTML='Loading...'; db.collection("posts").doc(pid).collection("comments").orderBy("timestamp","asc").onSnapshot(s=>{l.innerHTML=''; s.forEach(d=>{l.innerHTML+=`<div class="comment-item"><span class="comment-user">${d.data().username}:</span>${d.data().text}</div>`;})});}
-        function addComment(){const t=document.getElementById('comment-input').value; const p=document.getElementById('current-post-id').value; if(t) db.collection("posts").doc(p).collection("comments").add({text:t, userId:currentUser.uid, username:myData.username||"User", timestamp:firebase.firestore.FieldValue.serverTimestamp()}); document.getElementById('comment-input').value='';}
-        function openPrivateChat(tid, tname){openModal('private-chat-modal'); document.getElementById('private-chat-title').innerText="Chat with "+tname; document.getElementById('private-chat-target').value=tid; const cid=[currentUser.uid,tid].sort().join("_"); const b=document.getElementById('private-chat-box'); db.collection("chats").doc(cid).collection("messages").orderBy("timestamp","asc").limitToLast(50).onSnapshot(s=>{b.innerHTML=''; s.forEach(d=>{const m=d.data(); const c=(m.senderId===currentUser.uid)?'var(--neon-blue)':'white'; const a=(m.senderId===currentUser.uid)?'right':'left'; b.innerHTML+=`<div style="text-align:${a}; margin-bottom:5px; color:${c}">${m.text}</div>`;}); b.scrollTop=b.scrollHeight;});}
-        function sendPrivateMessage(){const t=document.getElementById('private-chat-input').value; const tid=document.getElementById('private-chat-target').value; if(t){const cid=[currentUser.uid,tid].sort().join("_"); db.collection("chats").doc(cid).collection("messages").add({text:t, senderId:currentUser.uid, timestamp:firebase.firestore.FieldValue.serverTimestamp()}); document.getElementById('private-chat-input').value='';}}
-        function likePost(i,e){e.stopPropagation(); const r=db.collection("posts").doc(i); db.runTransaction(t=>t.get(r).then(d=>{const l=d.data().likes||[]; if(l.includes(currentUser.uid))t.update(r,{likes:firebase.firestore.FieldValue.arrayRemove(currentUser.uid)}); else t.update(r,{likes:firebase.firestore.FieldValue.arrayUnion(currentUser.uid)});}));}
-        async function searchGifs(){const q=document.getElementById('gif-search-input').value; const c=document.getElementById('gif-results'); c.innerHTML='Searching...'; try{const r=await fetch(`https://g.tenor.com/v1/search?q=${q}&key=LIVDSRZULELA&limit=8`); const d=await r.json(); c.innerHTML=''; d.results.forEach(g=>{const u=g.media[0].gif.url; const i=document.createElement('img'); i.src=u; i.className='gif-result-item'; i.onclick=()=>{db.collection("posts").add({url:u, caption:"GIF: "+q, type:'image', reactions:{}, timestamp:firebase.firestore.FieldValue.serverTimestamp(), userId:currentUser.uid}); closeModal(null,'gif-modal');}; c.appendChild(i);});}catch(e){c.innerHTML='Error';}}
-        
         // PICSART DRAW (FIXED BLANK CANVAS)
         let canvas,ctx,drawing=false; 
         function openSnapDraw(){
@@ -1260,11 +1310,11 @@
         function startDraw(e){e.preventDefault(); drawing=true; const r=canvas.getBoundingClientRect(); ctx.beginPath(); ctx.moveTo(e.touches[0].clientX-r.left, e.touches[0].clientY-r.top);}
         function moveDraw(e){e.preventDefault(); if(drawing){const r=canvas.getBoundingClientRect(); ctx.lineTo(e.touches[0].clientX-r.left, e.touches[0].clientY-r.top); ctx.stroke();}}
         function endDraw(){drawing=false;} 
-        function saveSnapDrawing(){canvas.toBlob(b=>{uploadcare.fileFrom('object',b).done(i=>{tempFile=i; closeModal(null,'draw-modal'); openModal('caption-modal');})});}
-        function triggerDrawBaseUpload() { uploadcare.Widget('#draw-base-upload').openDialog(null,{imagesOnly:true}).done(f=>{f.done(i=>{ 
+        function saveDrawing(){canvas.toBlob(b=>{uploadcare.fileFrom('object',b).done(i=>{tempFile=i; closeModal(null,'draw-modal'); openModal('caption-modal');})});}
+        function triggerDrawOverlay() { uploadcare.Widget('#draw-overlay-upload').openDialog(null,{imagesOnly:true}).done(f=>{f.done(i=>{ 
              const img = new Image(); img.crossOrigin="Anonymous"; img.src=i.cdnUrl; img.onload=()=>{ctx.drawImage(img,0,0,canvas.width,canvas.height);} 
         });}); }
-        function clearSnapCanvas() { ctx.fillStyle="white"; ctx.fillRect(0,0,canvas.width,canvas.height); }
+        function clearCanvas() { ctx.fillStyle="white"; ctx.fillRect(0,0,canvas.width,canvas.height); }
 
         // EDITOR PRO (FIXED CANVAS)
         let editorCanvas, eCtx, currentEditImg;
@@ -1306,17 +1356,21 @@
         db.collection("chat").orderBy("timestamp","asc").limitToLast(50).onSnapshot(s=>{const b=document.getElementById('chat-box'); b.innerHTML=''; s.forEach(d=>{b.innerHTML+=`<div>${d.data().text}</div>`;}); b.scrollTop=b.scrollHeight;});
         function loadUserData(){db.collection("users").doc(currentUser.uid).onSnapshot(d=>{if(d.exists){myData=d.data(); if(myData.avatarUrl)document.getElementById('header-avatar').src=myData.avatarUrl; if(myData.wallpaperUrl){myWallpaper=myData.wallpaperUrl; const layer=document.getElementById('wallpaper-layer'); if(myWallpaper.startsWith('http')||myWallpaper.startsWith('data:'))layer.style.backgroundImage=`url('${myWallpaper}')`; else layer.style.background=myWallpaper;}}});}
         function openModal(id){document.getElementById(id).style.display='flex';}
-        function closeModal(e,id){if(!e||e.target.classList.contains('modal-overlay')||e.target.classList.contains('close-modal-btn')){document.getElementById(id).style.display='none'; 
-            if(id==='viewer-modal'){
-                document.getElementById('viewer-container').innerHTML=''; 
-                if(currentAudio)currentAudio.pause();
-                if(currentQuizSong)currentQuizSong.pause();
+        function closeModal(e,id){
+            if(!e||e.target.classList.contains('modal-overlay')||e.target.classList.contains('close-modal-btn')){
+                document.getElementById(id).style.display='none'; 
+                // Stop video/audio when closing
+                if(id==='viewer-modal'){
+                    document.getElementById('viewer-container').innerHTML=''; 
+                    if(currentAudio){ currentAudio.pause(); currentAudio = null; }
+                }
             }
-        }}
+        }
         function scrollToTop(){window.scrollTo(0,0);}
     </script>
 </body>
 </html>
+
 
 
 <!-- update for github pages -->
