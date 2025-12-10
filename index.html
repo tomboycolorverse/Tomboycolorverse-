@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Tomboycolorverse</title>
     
     <script>
@@ -19,6 +21,8 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.youtube.com/iframe_api"></script>
 
     <style>
         /* --- STYLES --- */
@@ -33,6 +37,7 @@
             --editor-orange: #ff9900;
             --vibe-blue: #00c6ff;
             --game-red: #ff4757;
+            --radio-gold: #ffd700;
             --dark-bg: #000000;
         }
 
@@ -41,18 +46,14 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--dark-bg);
             color: white;
-            padding-top: 80px; 
-            padding-bottom: 90px;
+            padding-top: calc(80px + env(safe-area-inset-top)); 
+            padding-bottom: calc(90px + env(safe-area-inset-bottom));
             overflow-x: hidden;
-            background-size: cover; 
-            background-position: center center; 
-            background-attachment: fixed; 
-            background-repeat: no-repeat;
-            transition: background 0.5s ease;
             -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: none;
         }
 
-        /* FIXED WALLPAPER LAYER */
+        /* WALLPAPER LAYER */
         #wallpaper-layer {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -1;
@@ -81,8 +82,8 @@
         /* --- HEADER --- */
         .header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px; background: rgba(0,0,0,0.95); 
-            position: fixed; top: 0; left: 0; width: 100%; box-sizing: border-box;
+            padding: 15px; padding-top: max(15px, env(safe-area-inset-top));
+            background: rgba(0,0,0,0.95); position: fixed; top: 0; left: 0; width: 100%; box-sizing: border-box;
             z-index: 1000; border-bottom: 1px solid #333; backdrop-filter: blur(10px);
         }
         .logout-btn {
@@ -156,6 +157,8 @@
         .btn-vibe { background: var(--vibe-blue); color: white; grid-column: 2; box-shadow: 0 0 10px var(--vibe-blue); }
         .btn-memory { background: var(--game-red); color: white; grid-column: 1; box-shadow: 0 0 10px var(--game-red); }
         .btn-box { background: #666; color: white; grid-column: 2; border: 1px solid white; box-shadow: 0 0 10px white; }
+        .btn-run { background: linear-gradient(to right, #ff9966, #ff5e62); color: white; grid-column: 1; } 
+        .btn-radio { background: var(--radio-gold); color: black; grid-column: 1; box-shadow: 0 0 10px var(--radio-gold); }
 
         /* --- FEED --- */
         .feed-title { margin: 15px 15px 10px; font-size: 1.2rem; font-weight: 800; text-shadow: 1px 1px 2px black; display: flex; justify-content: space-between; }
@@ -195,8 +198,9 @@
         /* EDIT PENCIL */
         .edit-pencil { 
             position: absolute; top: 10px; right: 10px; 
-            background: rgba(0,0,0,0.5); padding: 5px; border-radius: 50%; 
-            color: var(--neon-yellow); cursor: pointer; z-index: 20; 
+            background: rgba(0,0,0,0.6); padding: 8px; border-radius: 50%; 
+            color: var(--neon-yellow); cursor: pointer; z-index: 100;
+            border: 1px solid white;
         }
 
         .reaction-bar {
@@ -219,8 +223,9 @@
         /* --- NAV --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.95);
+            padding-bottom: max(25px, env(safe-area-inset-bottom));
             border-top: 1px solid #333; display: flex; justify-content: space-around;
-            align-items: center; padding: 15px 0 25px; z-index: 2000; backdrop-filter: blur(10px);
+            align-items: center; padding-top: 15px; z-index: 2000; backdrop-filter: blur(10px);
         }
         .nav-icon { font-size: 1.6rem; color: #999; cursor: pointer; transition: 0.2s; }
         .nav-icon:active { color: white; transform: scale(1.1); }
@@ -299,6 +304,9 @@
             display: flex; flex-direction: column; align-items: center;
             position: fixed; top: 0; left: 0; width: 100%; z-index: 5000;
         }
+
+        /* ANIMAL GAME CANVAS */
+        #run-canvas { background: #222; border: 2px solid white; display:block; margin: 0 auto; border-radius: 10px; touch-action: none; }
     </style>
 </head>
 <body>
@@ -369,6 +377,8 @@
                 <button class="action-btn btn-vibe" onclick="openDailyVibe()"><i class="fas fa-star"></i> Daily Vibe</button>
                 <button class="action-btn btn-memory" onclick="startMemoryGame()"><i class="fas fa-brain"></i> Memory Game</button>
                 <button class="action-btn btn-box" onclick="openMysteryBox()"><i class="fas fa-gift"></i> Mystery Box</button>
+                <button class="action-btn btn-run" onclick="startRainbowRun()"><i class="fas fa-paw"></i> Multiverse Run</button>
+                <button class="action-btn btn-radio" onclick="openRadio()"><i class="fas fa-music"></i> Galaxy Radio</button>
             </div>
         </div>
 
@@ -382,6 +392,40 @@
             <i class="fas fa-home nav-icon" onclick="resetToHome(event)"></i>
             <div class="nav-plus-btn" onclick="triggerPostUpload()">+</div>
             <i class="fas fa-user nav-icon" onclick="loadMyProfile(event)"></i>
+        </div>
+    </div>
+
+    <div id="run-modal" class="modal-overlay" onclick="closeModal(event, 'run-modal')">
+        <div class="modal-content">
+            <span class="close-modal-btn" onclick="closeModal(null, 'run-modal')">&times;</span>
+            <h3>🌌 Rainbow Run</h3>
+            <div style="display:flex; gap:5px; margin-bottom:10px;">
+                <button class="action-btn btn-quote" onclick="selectWorld('forest')">🌳 Forest</button>
+                <button class="action-btn btn-quote" onclick="selectWorld('space')">🚀 Space</button>
+                <button class="action-btn btn-quote" onclick="selectWorld('water')">🌊 Aqua</button>
+            </div>
+            <p id="world-title">Select World!</p>
+            <canvas id="run-canvas" width="300" height="200"></canvas>
+            <p id="run-score">Score: 0</p>
+            <button class="action-btn btn-game" onclick="initRainbowRun()">START</button>
+        </div>
+    </div>
+
+    <div id="radio-modal" class="modal-overlay" onclick="closeModal(event, 'radio-modal')">
+        <div class="modal-content">
+            <span class="close-modal-btn" onclick="closeModal(null, 'radio-modal')">&times;</span>
+            <h3>📻 Galaxy Radio</h3>
+            <div id="visualizer" style="display:flex; gap:2px; height:50px; justify-content:center; align-items:flex-end;">
+                <div style="width:10px; height:20px; background:var(--neon-pink); animation:bounce 0.5s infinite;"></div>
+                <div style="width:10px; height:40px; background:var(--neon-blue); animation:bounce 0.7s infinite;"></div>
+                <div style="width:10px; height:30px; background:var(--neon-green); animation:bounce 0.6s infinite;"></div>
+            </div>
+            <style>@keyframes bounce { 0%,100% {height:10px;} 50% {height:40px;} }</style>
+            <br>
+            <button class="action-btn btn-quote" onclick="playStation('PLMC9KNkIncKtPzgY-5rmhvj7jy8jP1r68')">🎤 Pop Divas</button>
+            <button class="action-btn btn-quote" onclick="playStation('RDCLAK5uy_kpsWRj59o6H1zW46lC9h3r7sJ8j3i7i84')">🔥 Hip Hop Hits</button>
+            <button class="action-btn btn-quote" onclick="playStation('jfKfPfyJRdk')">🎧 Lofi Girl Live</button>
+            <div id="radio-player" style="margin-top:10px; display:none;"></div>
         </div>
     </div>
 
@@ -429,11 +473,7 @@
             <h3>Story Reel Maker 🎬</h3>
             <button class="action-btn btn-upload" style="width:100%; margin-bottom:10px;" onclick="triggerReelUpload()">Upload Video</button>
             <p>Add Music?</p>
-            <select id="reel-music-select" class="text-input">
-                <option value="">No Music</option>
-                <option value="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3">Chill</option>
-                <option value="https://cdn.pixabay.com/download/audio/2022/10/25/audio_10e0532290.mp3">Hip Hop</option>
-            </select>
+            <input type="text" id="reel-custom-music" class="text-input" placeholder="Paste YouTube Link (Song)...">
             <button class="action-btn btn-reel" style="width:100%" onclick="finalizeReel()">POST TO STORY</button>
         </div>
     </div>
@@ -570,39 +610,6 @@
         <button id="viewer-delete-btn" onclick=""><i class="fas fa-trash"></i></button>
     </div>
 
-    <div id="story-upload-modal" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-modal-btn" onclick="closeModal(null, 'story-upload-modal')">&times;</span>
-            <h3>Creator Studio ✨</h3>
-            <p>👻 Lenses (Photos Only):</p>
-            <select id="story-lens-select" class="text-input">
-                <option value="">None</option>
-                <option value="lens-green">Green Screen</option>
-                <option value="lens-cat">Cat Ears 🐱</option>
-                <option value="lens-glasses">Cool Glasses 😎</option>
-            </select>
-
-            <p>📸 Filters:</p>
-            <select id="story-filter-select" class="text-input">
-                <option value="">Normal</option>
-                <option value="filter-bw">Black & White</option>
-                <option value="filter-sepia">Vintage</option>
-                <option value="filter-neon">Neon</option>
-                <option value="filter-invert">X-Ray</option>
-                <option value="filter-dreamy">Dreamy</option>
-            </select>
-            <p>Add Music?</p>
-            <select id="story-music-select" class="text-input">
-                <option value="">No Music</option>
-                <option value="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3">Chill Vibes</option>
-                <option value="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3">Pop Upbeat</option>
-            </select>
-            <input type="text" id="custom-music-url" class="text-input" placeholder="Paste YouTube Link here...">
-            <br><br>
-            <button class="action-btn btn-upload" style="width:100%" onclick="finalizeStory()">POST STORY</button>
-        </div>
-    </div>
-
     <div id="caption-modal" class="modal-overlay">
         <div class="modal-content">
             <span class="close-modal-btn" onclick="closeModal(null, 'caption-modal')">&times;</span>
@@ -718,6 +725,7 @@
         let isScrolling = false;
         let quizScore = 0;
         let currentQuizSong = null;
+        let radioPlayer = null;
 
         // --- AUTH ---
         auth.onAuthStateChanged((user) => {
@@ -755,8 +763,12 @@
         let startX, startY, startTime;
         window.addEventListener('scroll', () => {
             isScrolling = true;
+            document.body.style.pointerEvents = 'none'; 
             clearTimeout(window.scrollTimeout);
-            window.scrollTimeout = setTimeout(() => { isScrolling = false; }, 250);
+            window.scrollTimeout = setTimeout(() => { 
+                isScrolling = false; 
+                document.body.style.pointerEvents = 'auto'; 
+            }, 150);
         });
 
         // --- NAVIGATION SAFETY ---
@@ -855,7 +867,7 @@
                 let reactionIcon = '🤍'; 
                 if(d.reactions && d.reactions[currentUser.uid]) reactionIcon = d.reactions[currentUser.uid];
                 const reactionMenuId = `react-menu-${doc.id}`;
-                const reactionMenu = `<div id="${reactionMenuId}" class="reaction-bar"><span class="reaction-emoji" onclick="reactPost('${doc.id}', '❤️')">❤️</span><span class="reaction-emoji" onclick="reactPost('${doc.id}', '😂')">😂</span><span class="reaction-emoji" onclick="reactPost('${doc.id}', '🔥')">🔥</span><span class="reaction-emoji" onclick="reactPost('${doc.id}', '😢')">😢</span><span class="reaction-emoji" onclick="reactPost('${doc.id}', '😡')">😡</span></div>`;
+                const reactionMenu = `<div id="${reactionMenuId}" class="reaction-bar"><span class="reaction-emoji" onclick="reactPost(event, '${doc.id}', '❤️')">❤️</span><span class="reaction-emoji" onclick="reactPost(event, '${doc.id}', '😂')">😂</span><span class="reaction-emoji" onclick="reactPost(event, '${doc.id}', '🔥')">🔥</span><span class="reaction-emoji" onclick="reactPost(event, '${doc.id}', '😢')">😢</span><span class="reaction-emoji" onclick="reactPost(event, '${doc.id}', '😡')">😡</span></div>`;
 
                 el.innerHTML = `${content}${editIcon}<div style="position:relative;">${reactionMenu}</div><div class="card-footer"><div style="display:flex; align-items:center; gap:10px; overflow:hidden; width:80%;">${avatarHtml}<span style="font-size:1.5rem; cursor:pointer;" onclick="toggleReactionMenu('${reactionMenuId}', event)">${reactionIcon}</span><i class="fas fa-comment" style="font-size:1.4rem; cursor:pointer;" onclick="openComments('${doc.id}')"></i><span class="card-caption">${d.caption || ''}</span></div><div>${deleteBtn}</div></div>`;
                 
@@ -955,7 +967,7 @@
         function openDailyVibe() {
             openModal('vibe-modal');
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-            const vibes = ["You are magnetic! ✨", "Big things coming 🚀", "Stay wild, moon child 🌙", "Your vibe attracts your tribe 💖", "Manifest that dream 🌟", "Focus on the good ⚡", "You are stronger than you know 💪"];
+            const vibes = ["You are magnetic! ✨", "Big things coming 🚀", "Stay wild, moon child 🌙", "Your vibe attracts your tribe 💖"];
             // GENERATE RANDOM GRADIENT
             const r1 = Math.floor(Math.random()*255); const g1 = Math.floor(Math.random()*255); const b1 = Math.floor(Math.random()*255);
             const r2 = Math.floor(Math.random()*255); const g2 = Math.floor(Math.random()*255); const b2 = Math.floor(Math.random()*255);
@@ -1008,6 +1020,76 @@
                     }
                 }, 1000);
             }
+        }
+
+        // --- RAINBOW RUN GAME (MARIO STYLE) ---
+        let rCanvas, rCtx, playerY, playerVelocity, pipes = [], rGameRunning=false, rScore=0, rLevel=1;
+        let rWorld = 'forest';
+
+        function selectWorld(w) { rWorld = w; document.getElementById('world-title').innerText = "World: " + w.toUpperCase(); }
+
+        function initRainbowRun(){
+            rCanvas = document.getElementById('run-canvas');
+            rCtx = rCanvas.getContext('2d');
+            playerY = 100; playerVelocity = 0; pipes = []; rScore = 0; rGameRunning=true; rLevel=1;
+            
+            // Jump Listener
+            rCanvas.addEventListener('touchstart', ()=>{ playerVelocity = -8; }, {passive:true});
+            rCanvas.addEventListener('mousedown', ()=>{ playerVelocity = -8; });
+            requestAnimationFrame(updateRainbowRun);
+        }
+        function updateRainbowRun(){
+            if(!rGameRunning) return;
+            
+            // Theme Changes
+            if(rWorld === 'forest') rCtx.fillStyle = '#87CEEB'; 
+            if(rWorld === 'space') rCtx.fillStyle = '#000033'; 
+            if(rWorld === 'water') rCtx.fillStyle = '#0066cc'; 
+
+            rCtx.fillRect(0,0,300,150);
+            
+            // Gravity
+            playerVelocity += 0.6; 
+            playerY += playerVelocity;
+            if(playerY > 120) { playerY = 120; playerVelocity = 0; } // Ground
+
+            // Draw Player (Changes Animal)
+            rCtx.font = "30px Arial"; 
+            let char = "🐨";
+            if(rWorld === 'space') char = "👽";
+            if(rWorld === 'water') char = "🐬";
+            
+            // Evolution
+            if(rScore >= 10 && rWorld === 'forest') char = "🐼";
+            if(rScore >= 20 && rWorld === 'forest') char = "🐯";
+            
+            rCtx.fillText(char, 30, playerY);
+
+            // Obstacles
+            if(Math.random() < 0.02 + (rScore * 0.001)) pipes.push({x:300});
+            for(let i=0; i<pipes.length; i++){
+                pipes[i].x -= (3 + (rScore * 0.1));
+                rCtx.fillText("🍄", pipes[i].x, 140);
+                if(pipes[i].x < -30) { pipes.splice(i,1); i--; rScore++; }
+                // Collision
+                if(Math.abs(pipes[i].x - 30) < 20 && playerY > 110) {
+                    rGameRunning = false; alert("Game Over! Score: "+rScore);
+                }
+            }
+            rCtx.fillStyle = "white"; rCtx.fillText("Score: "+rScore, 10, 20);
+            requestAnimationFrame(updateRainbowRun);
+        }
+        function startRainbowRun(){ openModal('run-modal'); }
+
+        // --- GALAXY RADIO (REAL MUSIC) ---
+        function openRadio() { openModal('radio-modal'); }
+        function playStation(playlistId){
+             if(radioPlayer) {
+                 radioPlayer.loadPlaylist({list:playlistId, listType:'playlist'});
+             } else {
+                 document.getElementById('radio-player').innerHTML = `<iframe width="100%" height="200" src="https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=1" frameborder="0" allow="autoplay"></iframe>`;
+                 document.getElementById('radio-player').style.display = 'block';
+             }
         }
 
         // --- UPLOADS & CREATION ---
@@ -1149,7 +1231,7 @@
         // AI WALLPAPER: RANDOM SEED
         function generateAIWallpaper() { const p=document.getElementById('wp-prompt').value; if(!p)return alert("Prompt!"); document.getElementById('gen-wp-btn').innerText="Generating..."; const u=`https://image.pollinations.ai/prompt/${encodeURIComponent(p)}?width=500&height=1000&n=${Math.random()}`; const i=new Image(); i.onload=()=>{db.collection("users").doc(currentUser.uid).set({wallpaperUrl:u},{merge:true}); document.getElementById('wallpaper-layer').style.background=''; document.getElementById('wallpaper-layer').style.backgroundImage=`url('${u}')`; closeModal(null,'ai-wallpaper-modal'); closeModal(null,'profile-modal'); document.getElementById('gen-wp-btn').innerText="GENERATE & SET";}; i.src=u;}
 
-        // AVATAR STUDIO: FIXED DICEBEAR ADVENTURER (STABLE)
+        // AVATAR STUDIO: FIXED DICEBEAR 7.x
         function updateAvatarPreview() {
             if(!currentUser) return;
             const seed = currentUser.uid;
@@ -1183,7 +1265,7 @@
         // --- HELPERS ---
         function deletePost(i,c,e){if(e)e.stopPropagation(); if(confirm("Delete?"))db.collection(c).doc(i).delete();}
         function toggleReactionMenu(id,e){e.stopPropagation(); const m=document.getElementById(id); m.style.display=(m.style.display==='flex')?'none':'flex';}
-        function reactPost(pid,em){const u={}; u[`reactions.${currentUser.uid}`]=em; db.collection("posts").doc(pid).update(u).catch(()=>{db.collection("posts").doc(pid).set({reactions:{[currentUser.uid]:em}},{merge:true})}); document.getElementById(`react-menu-${pid}`).style.display='none';}
+        function reactPost(e, pid, em){e.stopPropagation(); const u={}; u[`reactions.${currentUser.uid}`]=em; db.collection("posts").doc(pid).update(u).catch(()=>{db.collection("posts").doc(pid).set({reactions:{[currentUser.uid]:em}},{merge:true})}); document.getElementById(`react-menu-${pid}`).style.display='none';}
         function openComments(pid){openModal('comments-modal'); document.getElementById('current-post-id').value=pid; const l=document.getElementById('comments-list'); l.innerHTML='Loading...'; db.collection("posts").doc(pid).collection("comments").orderBy("timestamp","asc").onSnapshot(s=>{l.innerHTML=''; s.forEach(d=>{l.innerHTML+=`<div class="comment-item"><span class="comment-user">${d.data().username}:</span>${d.data().text}</div>`;})});}
         function addComment(){const t=document.getElementById('comment-input').value; const p=document.getElementById('current-post-id').value; if(t) db.collection("posts").doc(p).collection("comments").add({text:t, userId:currentUser.uid, username:myData.username||"User", timestamp:firebase.firestore.FieldValue.serverTimestamp()}); document.getElementById('comment-input').value='';}
         function openPrivateChat(tid, tname){openModal('private-chat-modal'); document.getElementById('private-chat-title').innerText="Chat with "+tname; document.getElementById('private-chat-target').value=tid; const cid=[currentUser.uid,tid].sort().join("_"); const b=document.getElementById('private-chat-box'); db.collection("chats").doc(cid).collection("messages").orderBy("timestamp","asc").limitToLast(50).onSnapshot(s=>{b.innerHTML=''; s.forEach(d=>{const m=d.data(); const c=(m.senderId===currentUser.uid)?'var(--neon-blue)':'white'; const a=(m.senderId===currentUser.uid)?'right':'left'; b.innerHTML+=`<div style="text-align:${a}; margin-bottom:5px; color:${c}">${m.text}</div>`;}); b.scrollTop=b.scrollHeight;});}
@@ -1269,4 +1351,5 @@
     </script>
 </body>
 </html>
+
 <!-- update for github pages -->
